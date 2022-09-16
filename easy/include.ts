@@ -18,38 +18,26 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyEqual<T, U> = (<G>() => G extends T ? 1 : 2) extends <G>() => G extends U
-  ? 1
-  : 2
-  ? true
-  : false;
+// explaination: https://stackoverflow.com/questions/68961864/how-does-the-equals-work-in-typescript
 
-type MyEqualX<T, U> = <G>() => G extends T ? G : "false";
+// type Eql<V1, V2> = (<Z>() => Z extends V1 ? 1 : 2) extends (<Z>()=> Z extends V2 ? 1 : 2)
+//     ? true
+//     : false
 
 type Includes<T extends readonly any[], U> = T extends [
   infer First,
   ...infer Rest
 ]
-  ? MyEqual<First, U> extends true
+  ? (
+      (<Z>() => Z extends First ? 1 : 2) extends <Z>() => Z extends U ? 1 : 2
+        ? true
+        : false
+    ) extends true
     ? true
     : Includes<Rest, U>
   : false;
 
-declare let x: <T>() => T extends number ? 1 : 2;
-declare let y: <T>() => T extends string ? 1 : 2;
-y = x;
-
-// type Includes<T extends readonly any[], U> = T extends [infer First, ...infer Rest]
-// ? First extends U
-//   ? (<G>() => G extends First ? 1 : 2) extends (<G>()=> G extends U ? 1 : 2)
-//     ? true
-//     : false
-//   : Includes<Rest, U>
-// : false
-
 type ___ = Includes<[boolean], false>;
-
-type __ = MyEqualX<[1], 1 | 2>;
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from "@type-challenges/utils";
